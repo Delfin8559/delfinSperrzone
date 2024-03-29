@@ -1,6 +1,0 @@
-Config = {}
-
-Config.Locations = {
-    
-
-}

@@ -1,38 +1,27 @@
-local isNearCoords = false
+blip = nil
 
-Citizen.CreateThread(function()
-    while true do
-
-        playerPos = GetEntityCoords(PlayerPedID())
-
-        isNearCoords = false
-        for k, v in pairs(Config.Locations) do
-            local distance = Vdist(playerPos, v[1], v[2], v[3])
-
-            if distance <= 1.5 then
-                isNearCoords = true
-            end
-        end
-
-        Citizen.Wait(350)
+RegisterCommand("sperrzone", function(source,agrs)
+    if DoesBlipExist(blip) then
+        -- Blip Existiert Nachricht
+    else 
+        local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
+        TriggerServerEvent(blips:takeBlip)
     end
 end)
 
-Citizen.CreateThread(function()
-    while true do
+RegisterNetEvent("blips:setBlip", function(x,y,z)
+    if x ~= nil then
+        blip = AddBlipForCoords(blipCoords.x, blipCoords.y, blipCoords.z)
+        SetBlipAsShortRange(blip, true)
 
-        if isNearCoords then
-            showInfobar("Test!")
-        end
-        
-        Citizen.Wait(1)
+        SetBlipScale(blip, 1.0)
+        SetBlipSprite(blip, 161)
+        SetBlipColour(blip, 21)
+        SetBlipAlpha(blip, 255)
+        AddTextEntry("SPERRZONE", blipName)
+        EndTextCommandSetBlipName(blip)
+        SetBlipCategory(blip, 2)
+    else
+       -- fehler 0x001, contact admin
     end
 end)
-
-
-function showInfobar(msg)
-    CurrentActionMsg  = msg
-    SetTextComponentFormat('STRING')
-    AddTextComponentString(CurrentActionMsg)
-    DisplayHelpTextFromStringLabel(0, 0, 1, -1)
-end
